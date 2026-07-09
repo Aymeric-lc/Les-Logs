@@ -1,0 +1,20 @@
+### Configuration du log (à adapter dans chaque script)
+$LogFolder   = Join-Path $FilePath "Les Logs Scripts"
+$ScriptName  = "LogsduScript-AddUser"   # <-- Change ça dans chaque script
+$LogFile     = Join-Path $LogFolder "$ScriptName_$(Get-Date -Format 'yyyy-MM-dd').log"
+
+# Création du sous-dossier s'il n'existe pas
+if (-not (Test-Path $LogFolder)) {
+    New-Item -Path $LogFolder -ItemType Directory -Force | Out-Null
+}
+
+function Write-Log {
+    param(
+        [string]$Message,
+        [ValidateSet("INFO","SUCCESS","ERROR","WARN")]
+        [string]$Level = "INFO"
+    )
+    $Timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+    $Line = "[$Timestamp] [$Level] $Message"
+    Add-Content -Path $LogFile -Value $Line
+}
